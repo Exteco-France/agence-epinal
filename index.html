@@ -733,7 +733,7 @@ function renderOverviewCharts(){
     // Actions par service — Google
     const gActL=[],gConvV=[];
     Object.entries(gAg).sort((a,b)=>sum(b[1],'conv')-sum(a[1],'conv')).forEach(([n,rs])=>{gActL.push(n);gConvV.push(sum(rs,'conv'))});
-    makeChart('actGoogleChart','bar',gActL,[{data:gConvV,backgroundColor:'rgba(66,133,244,.55)',borderRadius:6,borderSkipped:false}],{y:{beginAtZero:true}},{indexAxis:'y'});
+    makeChart('actGoogleChart','bar',gActL,[{data:gConvV,backgroundColor:'rgba(85,110,54,.7)',borderRadius:6,borderSkipped:false}],{y:{beginAtZero:true}},{indexAxis:'y'});
 }
 
 // ══ META PAGE ══
