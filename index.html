@@ -311,12 +311,6 @@
             </a>
         </div>
     </nav>
-    <div class="sidebar-footer">
-        <div class="sidebar-user">
-            <div class="user-avatar">HZ</div>
-            <div class="user-info"><div class="name">HZ Agency</div><div class="role">Administrateur</div></div>
-        </div>
-    </div>
 </aside>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -385,17 +379,18 @@
              ═══════════════════════════════════════ -->
         <div class="page-view" id="page-performances">
             <div class="page-header"><h2>Performances</h2><p>D&eacute;tail complet par ensemble de publicit&eacute;s / groupe d'annonces</p></div>
-            <div class="table-card"><div class="table-top"><h3>Toutes les campagnes</h3><div class="table-filters"><button class="filter-chip active" onclick="filterTable('all',this)">Tous</button><button class="filter-chip" onclick="filterTable('meta',this)">Meta</button><button class="filter-chip" onclick="filterTable('google',this)">Google</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Ensemble / Groupe</th><th>Plateforme</th><th>Impressions</th><th>Clics</th><th>CTR</th><th>Co&ucirc;t</th><th>Conversions</th><th>Co&ucirc;t/Conv.</th><th>Perf.</th></tr></thead><tbody id="tableBody"><tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-tertiary)">Chargement...</td></tr></tbody></table></div></div>
+            <div class="table-card"><div class="table-top"><h3>Toutes les campagnes</h3><div class="table-filters"><button class="filter-chip active" onclick="filterTable('all',this)">Tous</button><button class="filter-chip" onclick="filterTable('meta',this)">Meta</button><button class="filter-chip" onclick="filterTable('google',this)">Google</button></div></div><div style="overflow-x:auto"><table><thead><tr><th>Ensemble / Groupe</th><th>Plateforme</th><th>Impressions</th><th>Clics</th><th>CTR</th><th>Co&ucirc;t</th><th>Actions</th><th>Co&ucirc;t/Action</th><th>Perf.</th></tr></thead><tbody id="tableBody"><tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-tertiary)">Chargement...</td></tr></tbody></table></div></div>
         </div>
 
         <!-- ═══════════════════════════════════════
              PAGE: META ADS
              ═══════════════════════════════════════ -->
         <div class="page-view" id="page-meta">
-            <div class="page-header"><h2>Meta Ads</h2><p>Campagne Exteco Epinal &mdash; Facebook & Instagram</p></div>
+            <div class="page-header"><h2>Meta Ads</h2><p>Campagnes Exteco Epinal &mdash; Facebook & Instagram</p></div>
+            <div class="platform-tabs"><button class="platform-tab active" onclick="switchMetaTab('all',this)"><span class="tab-dot meta"></span>Vue globale</button><button class="platform-tab" onclick="switchMetaTab('conversion',this)"><span class="tab-dot" style="background:var(--exteco-green)"></span>Conversion Web</button><button class="platform-tab" onclick="switchMetaTab('leadgen',this)"><span class="tab-dot" style="background:var(--warning)"></span>Lead Gen</button></div>
             <div class="kpi-grid" id="metaKpiGrid"></div>
-            <div class="grid-1-1"><div class="card"><div class="card-header"><div><div class="card-title">D&eacute;penses Meta par mois</div></div></div><div class="chart-container"><canvas id="metaSpendChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title">Conversions Meta par mois</div></div></div><div class="chart-container"><canvas id="metaConvChart"></canvas></div></div></div>
-            <div class="table-card"><div class="table-top"><h3>D&eacute;tail Meta Ads</h3></div><div style="overflow-x:auto"><table><thead><tr><th>Ensemble</th><th>Impressions</th><th>Clics</th><th>CTR</th><th>Co&ucirc;t</th><th>Conversions</th><th>Co&ucirc;t/Conv.</th></tr></thead><tbody id="metaTableBody"></tbody></table></div></div>
+            <div class="grid-1-1"><div class="card"><div class="card-header"><div><div class="card-title">D&eacute;penses Meta par mois</div></div></div><div class="chart-container"><canvas id="metaSpendChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title" id="metaActionTitle">Actions par mois</div></div></div><div class="chart-container"><canvas id="metaConvChart"></canvas></div></div></div>
+            <div class="table-card"><div class="table-top"><h3 id="metaTableTitle">D&eacute;tail Meta Ads</h3></div><div style="overflow-x:auto"><table><thead><tr><th>Audience</th><th>Type</th><th>Impressions</th><th>Clics</th><th>CTR</th><th>Co&ucirc;t</th><th>Actions</th><th>Co&ucirc;t/Action</th></tr></thead><tbody id="metaTableBody"></tbody></table></div></div>
         </div>
 
         <!-- ═══════════════════════════════════════
@@ -431,7 +426,8 @@
                 <div style="font-size:12px;color:var(--text-secondary);line-height:1.8">
                     <strong>Source :</strong> Google Sheets via Supermetrics<br>
                     <strong>Sheet ID :</strong> <code style="background:var(--bg-hover);padding:2px 6px;border-radius:4px;font-size:11px">1mSOSiNi_gU-TX560saphbV_eKWh08I5h78m1gwx1JGg</code><br>
-                    <strong>Meta Ads GID :</strong> 551086439<br>
+                    <strong>Meta Conversion GID :</strong> 551086439<br>
+                    <strong>Meta Lead Gen GID :</strong> 1331012844<br>
                     <strong>Google Ads GID :</strong> 511702848<br>
                     <strong>Refresh :</strong> Automatique via Supermetrics (quotidien)
                 </div>
@@ -462,16 +458,18 @@
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   EXTECO EPINAL — DASHBOARD ENGINE v2
+   EXTECO EPINAL — DASHBOARD ENGINE v4 (Lead Gen + Date Picker)
    ══════════════════════════════════════════════════════════════ */
 const SHEET_ID='1mSOSiNi_gU-TX560saphbV_eKWh08I5h78m1gwx1JGg';
 const META_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=551086439`;
+const LEADGEN_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=1331012844`;
 const GOOGLE_URL=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=511702848`;
 
 Chart.defaults.font.family="'Plus Jakarta Sans','Inter',sans-serif";
 Chart.defaults.color='#8a8a8a';
 
-let MD=[],GD=[],charts={},curPlatform='all';
+let allMD=[],allGD=[],MD=[],GD=[],charts={},curPlatform='all',curTableFilter='all',curMetaTab='all';
+let dateStart=null,dateEnd=null,dataMinDate=null,dataMaxDate=null;
 
 // ── CSV ──
 function parseCSV(t){const ls=t.split('\n');if(ls.length<2)return[];const h=csvLine(ls[0]),d=[];for(let i=1;i<ls.length;i++){const l=ls[i].trim();if(!l)continue;const v=csvLine(l),r={};h.forEach((k,j)=>{r[k.trim().replace(/^"|"$/g,'')]=(v[j]||'').replace(/^"|"$/g,'')});d.push(r)}return d}
@@ -482,14 +480,39 @@ function pP(v){if(!v||v==='-')return 0;return parseFloat(String(v).replace(/[%\s
 
 function fC(r,ns){for(const n of ns)if(r[n]!==undefined&&r[n]!=='')return r[n];const ks=Object.keys(r);for(const n of ns){const lo=n.toLowerCase();for(const k of ks)if(k.toLowerCase().includes(lo)||lo.includes(k.toLowerCase()))if(r[k]!==undefined&&r[k]!=='')return r[k]}return''}
 
-function mapM(r){return{p:'meta',camp:fC(r,['Nom de la campagne','Campaign name']),ad:fC(r,["Nom de l'ensemble de publicités","Nom de l'ensemble de publicites",'Ad set name']),dt:fC(r,['Date']),imp:pN(fC(r,['Impressions'])),cl:pN(fC(r,['Clics (tous)','Clicks (all)','Clics'])),cost:pN(fC(r,['Coût (EUR)','Cout (EUR)','Cost (EUR)','Cost'])),ctr:pP(fC(r,['CTR (tous)','CTR'])),conv:pN(fC(r,['Conversions de site web','Conversions','Results'])),cpc:pN(fC(r,['CPC (tous)','CPC']))}}
-function mapG(r){return{p:'google',camp:fC(r,['Campaign','Campaign name','Nom de la campagne']),ad:fC(r,['Ad group','Ad Group',"Groupe d'annonces"]),dt:fC(r,['Date','Day']),imp:pN(fC(r,['Impressions','Impr.'])),cl:pN(fC(r,['Clicks','Clics'])),cost:pN(fC(r,['Cost','Cost (EUR)','Coût','Coût (EUR)'])),ctr:pP(fC(r,['CTR'])),conv:pN(fC(r,['Conversions','Conv.'])),cpc:pN(fC(r,['CPC','Avg. CPC']))}}
+function cleanAd(name){if(!name)return'Autre';const i=name.lastIndexOf('Audience ');return i>=0?name.substring(i+9):name}
+
+function mapM(r){return{p:'meta',campType:'conversion',camp:fC(r,['Nom de la campagne','Campaign name']),ad:cleanAd(fC(r,["Nom de l'ensemble de publicités","Nom de l'ensemble de publicites",'Ad set name'])),dt:fC(r,['Date']),imp:pN(fC(r,['Impressions'])),cl:pN(fC(r,['Clics (tous)','Clicks (all)','Clics'])),cost:pN(fC(r,['Coût (EUR)','Cout (EUR)','Cost (EUR)','Cost'])),ctr:pP(fC(r,['CTR (tous)','CTR'])),conv:pN(fC(r,['Conversions de site web','Conversions','Results'])),leads:0,cpc:pN(fC(r,['CPC (tous)','CPC']))}}
+function mapLG(r){return{p:'meta',campType:'leadgen',camp:fC(r,['Nom de la campagne','Campaign name']),ad:cleanAd(fC(r,["Nom de l'ensemble de publicités","Nom de l'ensemble de publicites",'Ad set name'])),dt:fC(r,['Date']),imp:pN(fC(r,['Impressions'])),cl:pN(fC(r,['Clics (tous)','Clicks (all)','Clics'])),cost:pN(fC(r,['Coût (EUR)','Cout (EUR)','Cost (EUR)','Cost'])),ctr:pP(fC(r,['CTR (tous)','CTR'])),conv:0,leads:pN(fC(r,['Prospects sur Facebook','Leads','Prospects'])),cpc:pN(fC(r,['CPC (tous)','CPC']))}}
+function mapG(r){return{p:'google',campType:'conversion',camp:fC(r,['Campaign','Campaign name','Nom de la campagne']),ad:fC(r,['Ad group','Ad Group',"Groupe d'annonces"]),dt:fC(r,['Date','Day']),imp:pN(fC(r,['Impressions','Impr.'])),cl:pN(fC(r,['Clicks','Clics'])),cost:pN(fC(r,['Cost','Cost (EUR)','Coût','Coût (EUR)'])),ctr:pP(fC(r,['CTR'])),conv:pN(fC(r,['Conversions','Conv.'])),leads:0,cpc:pN(fC(r,['CPC','Avg. CPC']))}}
 
 async function fetchCSV(u){const r=await fetch(u);if(!r.ok)throw new Error(r.status);return parseCSV(await r.text())}
+
+// ── Date normalization (handles YYYY-MM-DD and DD/MM/YYYY) ──
+function normDate(dt){
+    if(!dt)return null;
+    const m1=dt.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(m1)return m1[0];
+    const m2=dt.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if(m2)return m2[3]+'-'+m2[2]+'-'+m2[1];
+    return null;
+}
+
+function filterByDate(data){
+    if(!dateStart&&!dateEnd)return data;
+    return data.filter(r=>{
+        const d=normDate(r.dt);
+        if(!d)return false;
+        if(dateStart&&d<dateStart)return false;
+        if(dateEnd&&d>dateEnd)return false;
+        return true;
+    });
+}
 
 // ── Helpers ──
 const sum=(d,f)=>d.reduce((a,r)=>a+(r[f]||0),0);
 const MN=['Janv.','Fév.','Mars','Avr.','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'];
+const MN_FULL=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 function mKey(dt){if(!dt)return null;const m=dt.match(/(\d{4})-(\d{2})/);if(m)return m[1]+'-'+m[2];const m2=dt.match(/(\d{2})\/(\d{2})\/(\d{4})/);return m2?m2[3]+'-'+m2[2]:null}
 function mLabel(k){const[y,m]=k.split('-');return MN[parseInt(m)-1]+' '+y.slice(2)}
 function grpMonth(d){const g={};d.forEach(r=>{const k=mKey(r.dt);if(k){if(!g[k])g[k]=[];g[k].push(r)}});return g}
@@ -500,42 +523,150 @@ function fN(n){return new Intl.NumberFormat('fr-FR').format(Math.round(n))}
 function fPct(n){return n.toFixed(2).replace('.',',')+' %'}
 function getData(p){return p==='meta'?MD:p==='google'?GD:[...MD,...GD]}
 
+function formatDateFR(iso){
+    if(!iso)return '';
+    const[y,m,d]=iso.split('-');
+    return parseInt(d)+' '+MN_FULL[parseInt(m)-1]+' '+y;
+}
+
 // ── SVG icons ──
 const ICO_META='<svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/></svg>';
 const ICO_GOOG='<svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>';
 
+// ══ RENDER ALL ══
+function renderAll(){
+    MD=filterByDate(allMD);
+    GD=filterByDate(allGD);
+    updateDateDisplay();
+    renderKPIs(curPlatform);
+    renderOverviewCharts();
+    renderTable(curTableFilter);
+    renderMetaPage();
+    renderGooglePage();
+    renderReports();
+    document.getElementById('perfBadge').textContent=Object.keys({...grpAd(MD),...grpAd(GD)}).length;
+}
+
+function updateDateDisplay(){
+    const ds=[...MD,...GD].map(r=>normDate(r.dt)).filter(Boolean).sort();
+    const el=document.getElementById('dateRange');
+    if(ds.length){
+        el.textContent=formatDateFR(ds[0])+' — '+formatDateFR(ds[ds.length-1]);
+    } else {
+        el.textContent='Aucune donnée';
+    }
+}
+
 // ══ INIT ══
 async function init(){
-    let mOk=false,gOk=false;
-    try{const raw=await fetchCSV(META_URL);MD=raw.map(mapM).filter(r=>r.dt);mOk=MD.length>0}catch(e){console.error('Meta:',e)}
-    try{const raw=await fetchCSV(GOOGLE_URL);GD=raw.map(mapG).filter(r=>r.dt);gOk=GD.length>0}catch(e){console.error('Google:',e)}
+    let mOk=false,gOk=false,lgOk=false;
+    try{const raw=await fetchCSV(META_URL);const convData=raw.map(mapM).filter(r=>r.dt);mOk=convData.length>0;allMD=convData}catch(e){console.error('Meta:',e)}
+    try{const raw=await fetchCSV(LEADGEN_URL);const lgData=raw.map(mapLG).filter(r=>r.dt);lgOk=lgData.length>0;allMD=[...allMD,...lgData]}catch(e){console.error('LeadGen:',e)}
+    try{const raw=await fetchCSV(GOOGLE_URL);allGD=raw.map(mapG).filter(r=>r.dt);gOk=allGD.length>0}catch(e){console.error('Google:',e)}
 
-    // Status
+    // Status — error only
     const st=document.getElementById('dataStatus');
-    if(mOk||gOk){st.innerHTML=`<div class="data-status success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${MD.length+GD.length} lignes &mdash; Meta: ${MD.length} | Google: ${GD.length}</div>`}
+    if(mOk||lgOk||gOk){st.innerHTML=''}
     else{st.innerHTML=`<div class="data-status error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Impossible de charger. V&eacute;rifiez que le Sheet est publi&eacute; sur le Web.</div>`}
 
-    // Date range
-    const ds=[...MD,...GD].map(r=>r.dt).filter(Boolean).sort();
-    if(ds.length)document.getElementById('dateRange').textContent=ds[0]+' → '+ds[ds.length-1];
+    // Compute global date bounds
+    const allDates=[...allMD,...allGD].map(r=>normDate(r.dt)).filter(Boolean).sort();
+    if(allDates.length){
+        dataMinDate=allDates[0];
+        dataMaxDate=allDates[allDates.length-1];
+        document.getElementById('dpStart').min=dataMinDate;
+        document.getElementById('dpStart').max=dataMaxDate;
+        document.getElementById('dpEnd').min=dataMinDate;
+        document.getElementById('dpEnd').max=dataMaxDate;
+    }
 
     // Conn status
-    setConn('meta',mOk,MD.length);setConn('google',gOk,GD.length);
-    document.getElementById('perfBadge').textContent=Object.keys({...grpAd(MD),...grpAd(GD)}).length;
+    const metaConvCount=allMD.filter(r=>r.campType==='conversion').length;
+    const metaLGCount=allMD.filter(r=>r.campType==='leadgen').length;
+    setConnMeta(mOk||lgOk,metaConvCount,metaLGCount);setConn('google',gOk,allGD.length);
 
-    // Render all pages
-    renderKPIs('all');renderOverviewCharts();renderTable('all');
-    renderPlatformPage('meta');renderPlatformPage('google');
-    renderReports();
+    // Initial render (all data)
+    renderAll();
+    initDatePicker();
 
     document.getElementById('loader').classList.add('hidden');
-    console.log('Meta sample:',MD.slice(0,2));console.log('Google sample:',GD.slice(0,2));
 }
 
 function setConn(p,ok,n){
     document.getElementById(p+'ConnInfo').textContent=ok?n+' lignes via Supermetrics':'Aucune donnée';
     document.getElementById(p+'ConnSt').className='conn-status '+(ok?'ok':'warn');
     document.getElementById(p+'ConnLbl').textContent=ok?'Connecté':'Erreur';
+}
+function setConnMeta(ok,convN,lgN){
+    const info=ok?convN+' conv. + '+lgN+' lead gen via Supermetrics':'Aucune donnée';
+    document.getElementById('metaConnInfo').textContent=info;
+    document.getElementById('metaConnSt').className='conn-status '+(ok?'ok':'warn');
+    document.getElementById('metaConnLbl').textContent=ok?'Connecté':'Erreur';
+}
+
+// ══ DATE PICKER ══
+function initDatePicker(){
+    const toggle=document.getElementById('dateToggle');
+    const picker=document.getElementById('datePicker');
+    const overlay=document.getElementById('dpOverlay');
+    const dpStart=document.getElementById('dpStart');
+    const dpEnd=document.getElementById('dpEnd');
+
+    function openDP(){picker.classList.add('open');overlay.classList.add('open')}
+    function closeDP(){picker.classList.remove('open');overlay.classList.remove('open')}
+
+    toggle.addEventListener('click',()=>{picker.classList.contains('open')?closeDP():openDP()});
+    overlay.addEventListener('click',closeDP);
+
+    // Presets
+    document.querySelectorAll('.dp-preset').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            document.querySelectorAll('.dp-preset').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            const range=btn.dataset.range;
+            if(range==='all'){
+                dateStart=null;dateEnd=null;
+                dpStart.value='';dpEnd.value='';
+            } else {
+                const end=new Date(dataMaxDate+'T00:00:00');
+                const start=new Date(dataMaxDate+'T00:00:00');
+                if(range==='7d')start.setDate(start.getDate()-7);
+                else if(range==='30d')start.setDate(start.getDate()-30);
+                else if(range==='3m')start.setMonth(start.getMonth()-3);
+                else if(range==='6m')start.setMonth(start.getMonth()-6);
+                else if(range==='12m')start.setFullYear(start.getFullYear()-1);
+                dateStart=start.toISOString().slice(0,10);
+                dateEnd=dataMaxDate;
+                dpStart.value=dateStart;
+                dpEnd.value=dateEnd;
+            }
+            renderAll();
+            closeDP();
+        });
+    });
+
+    // Apply custom dates
+    document.getElementById('dpApply').addEventListener('click',()=>{
+        dateStart=dpStart.value||null;
+        dateEnd=dpEnd.value||null;
+        // Clear preset active
+        document.querySelectorAll('.dp-preset').forEach(b=>b.classList.remove('active'));
+        if(!dateStart&&!dateEnd){
+            document.querySelector('.dp-preset[data-range="all"]').classList.add('active');
+        }
+        renderAll();
+        closeDP();
+    });
+
+    // Reset
+    document.getElementById('dpReset').addEventListener('click',()=>{
+        dateStart=null;dateEnd=null;
+        dpStart.value='';dpEnd.value='';
+        document.querySelectorAll('.dp-preset').forEach(b=>b.classList.remove('active'));
+        document.querySelector('.dp-preset[data-range="all"]').classList.add('active');
+        renderAll();
+        closeDP();
+    });
 }
 
 // ══ NAVIGATION ══
@@ -547,7 +678,6 @@ document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
         document.querySelectorAll('.page-view').forEach(v=>v.classList.remove('active'));
         document.getElementById('page-'+page).classList.add('active');
         document.getElementById('breadcrumbPage').textContent=item.textContent.trim();
-        // Close mobile sidebar
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('sidebarOverlay').classList.remove('show');
     });
@@ -555,13 +685,14 @@ document.querySelectorAll('.nav-item[data-page]').forEach(item=>{
 
 // ══ KPIs ══
 function renderKPIs(p){
-    const d=getData(p),sp=sum(d,'cost'),cv=sum(d,'conv'),cl=sum(d,'cl'),im=sum(d,'imp');
-    const cpl=cv>0?sp/cv:0,ctr=im>0?(cl/im)*100:0;
+    const d=getData(p),sp=sum(d,'cost'),cv=sum(d,'conv'),ld=sum(d,'leads'),cl=sum(d,'cl'),im=sum(d,'imp');
+    const totalActions=cv+ld,cpa=totalActions>0?sp/totalActions:0,ctr=im>0?(cl/im)*100:0;
     const lbl=p==='all'?'Meta + Google':p==='meta'?'Meta Ads':'Google Ads';
+    const actSub=ld>0?fN(cv)+' conv. + '+fN(ld)+' leads':fN(im)+' impressions';
     document.getElementById('kpiGrid').innerHTML=kpiHTML([
         {label:'Dépenses totales',value:fE(sp),sub:lbl,icon:'green',svg:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
-        {label:'Conversions',value:fN(cv),sub:fN(im)+' impressions',icon:'blue',svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>'},
-        {label:'Coût / Conversion',value:cv>0?fE2(cpl):'-',sub:fN(cl)+' clics',icon:'green',svg:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'},
+        {label:ld>0?'Actions totales':'Conversions',value:fN(totalActions),sub:actSub,icon:'blue',svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>'},
+        {label:ld>0?'Coût / Action':'Coût / Conversion',value:totalActions>0?fE2(cpa):'-',sub:fN(cl)+' clics',icon:'green',svg:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'},
         {label:'CTR moyen',value:fPct(ctr),sub:lbl,icon:'blue',svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
     ]);
 }
@@ -571,39 +702,100 @@ function kpiHTML(items){return items.map(i=>`<div class="kpi-card"><div class="k
 function renderOverviewCharts(){
     const mm=grpMonth(MD),gm=grpMonth(GD);
     const ks=[...new Set([...Object.keys(mm),...Object.keys(gm)])].sort();
-    // Spend
     makeChart('spendChart','bar',ks.map(mLabel),[{label:'Meta',data:ks.map(k=>sum(mm[k]||[],'cost')),backgroundColor:'rgba(24,119,242,.75)',borderRadius:6,borderSkipped:false},{label:'Google',data:ks.map(k=>sum(gm[k]||[],'cost')),backgroundColor:'rgba(66,133,244,.4)',borderRadius:6,borderSkipped:false}],{y:{ticks:{callback:v=>fE(v)}}});
-    // Budget donut
     const mg=grpAd(MD),gg=grpAd(GD),labs=[],vals=[],cols=['#1877f2','#42a5f5','#90caf9','#bbdefb','#34a853','#66bb6a','#a5d6a7','#c8e6c9'];
     Object.entries(mg).forEach(([n,r])=>{labs.push('Meta: '+n);vals.push(sum(r,'cost'))});
     Object.entries(gg).forEach(([n,r])=>{labs.push('Google: '+n);vals.push(sum(r,'cost'))});
     makeDoughnut('budgetChart',labs,vals,cols);
-    // Conv line
-    makeChart('convChart','line',ks.map(mLabel),[{label:'Meta',data:ks.map(k=>sum(mm[k]||[],'conv')),borderColor:'#1877f2',backgroundColor:'rgba(24,119,242,.1)',borderWidth:2.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#1877f2'},{label:'Google',data:ks.map(k=>sum(gm[k]||[],'conv')),borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.08)',borderWidth:2.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#4285f4'}],{y:{beginAtZero:true}});
-    // CTR bar horizontal
+    makeChart('convChart','line',ks.map(mLabel),[{label:'Meta',data:ks.map(k=>{const d=mm[k]||[];return sum(d,'conv')+sum(d,'leads')}),borderColor:'#1877f2',backgroundColor:'rgba(24,119,242,.1)',borderWidth:2.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#1877f2'},{label:'Google',data:ks.map(k=>sum(gm[k]||[],'conv')),borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.08)',borderWidth:2.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#4285f4'}],{y:{beginAtZero:true}});
     const all=[...MD,...GD],ag=grpAd(all),cLabs=[],cVals=[],cCols=[];
     Object.entries(ag).forEach(([n,rs])=>{const im=sum(rs,'imp'),cl=sum(rs,'cl');cLabs.push(n);cVals.push(im>0?Math.round((cl/im)*10000)/100:0);cCols.push(rs[0]?.p==='meta'?'rgba(24,119,242,.7)':'rgba(66,133,244,.4)')});
     makeChart('ctrChart','bar',cLabs,[{data:cVals,backgroundColor:cCols,borderRadius:6,borderSkipped:false}],{x:{ticks:{callback:v=>v+'%'}}},{indexAxis:'y'});
 }
 
-// ══ PLATFORM PAGES ══
-function renderPlatformPage(p){
-    const d=p==='meta'?MD:GD,prefix=p,sp=sum(d,'cost'),cv=sum(d,'conv'),cl=sum(d,'cl'),im=sum(d,'imp');
+// ══ META PAGE ══
+function getMetaData(tab){
+    if(tab==='conversion')return MD.filter(r=>r.campType==='conversion');
+    if(tab==='leadgen')return MD.filter(r=>r.campType==='leadgen');
+    return MD;
+}
+function renderMetaPage(){
+    const tab=curMetaTab,d=getMetaData(tab);
+    const sp=sum(d,'cost'),cv=sum(d,'conv'),ld=sum(d,'leads'),cl=sum(d,'cl'),im=sum(d,'imp');
+    const totalAct=cv+ld,ctr=im>0?(cl/im)*100:0,cpa=totalAct>0?sp/totalAct:0;
+    const ic='meta-i';
+    // Adaptive KPIs based on tab
+    let kpis;
+    if(tab==='leadgen'){
+        kpis=[
+            {label:'Dépenses',value:fE(sp),sub:'Lead Gen',icon:ic,svg:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
+            {label:'Leads',value:fN(ld),sub:fN(im)+' impr.',icon:ic,svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+            {label:'Coût / Lead',value:ld>0?fE2(sp/ld):'-',sub:fN(cl)+' clics',icon:ic,svg:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'},
+            {label:'CTR',value:fPct(ctr),sub:'Moyenne',icon:ic,svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
+        ];
+        document.getElementById('metaActionTitle').textContent='Leads par mois';
+        document.getElementById('metaTableTitle').textContent='Détail Lead Gen';
+    } else if(tab==='conversion'){
+        kpis=[
+            {label:'Dépenses',value:fE(sp),sub:'Conversion Web',icon:ic,svg:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
+            {label:'Conversions web',value:fN(cv),sub:fN(im)+' impr.',icon:ic,svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+            {label:'Coût / Conv.',value:cv>0?fE2(sp/cv):'-',sub:fN(cl)+' clics',icon:ic,svg:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'},
+            {label:'CTR',value:fPct(ctr),sub:'Moyenne',icon:ic,svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
+        ];
+        document.getElementById('metaActionTitle').textContent='Conversions web par mois';
+        document.getElementById('metaTableTitle').textContent='Détail Conversion Web';
+    } else {
+        kpis=[
+            {label:'Dépenses',value:fE(sp),sub:'Meta Ads',icon:ic,svg:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
+            {label:'Conv. web',value:fN(cv),sub:fN(ld)+' leads',icon:ic,svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+            {label:'Leads',value:fN(ld),sub:ld>0?'CPL: '+fE2(sum(d.filter(r=>r.campType==='leadgen'),'cost')/(ld||1)):'-',icon:ic,svg:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>'},
+            {label:'CTR',value:fPct(ctr),sub:fN(im)+' impr.',icon:ic,svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
+        ];
+        document.getElementById('metaActionTitle').textContent='Actions par mois';
+        document.getElementById('metaTableTitle').textContent='Détail Meta Ads';
+    }
+    document.getElementById('metaKpiGrid').innerHTML=kpiHTML(kpis);
+    // Charts
+    const mo=grpMonth(d),ks=Object.keys(mo).sort();
+    makeChart('metaSpendChart','bar',ks.map(mLabel),[{data:ks.map(k=>sum(mo[k],'cost')),backgroundColor:'#1877f2bb',borderRadius:6,borderSkipped:false}],{y:{ticks:{callback:v=>fE(v)}}});
+    if(tab==='all'){
+        makeChart('metaConvChart','bar',ks.map(mLabel),[
+            {label:'Conv. web',data:ks.map(k=>sum(mo[k],'conv')),backgroundColor:'rgba(85,110,54,.7)',borderRadius:6,borderSkipped:false},
+            {label:'Leads',data:ks.map(k=>sum(mo[k],'leads')),backgroundColor:'rgba(239,108,0,.6)',borderRadius:6,borderSkipped:false}
+        ],{y:{beginAtZero:true}});
+    } else if(tab==='leadgen'){
+        makeChart('metaConvChart','bar',ks.map(mLabel),[{data:ks.map(k=>sum(mo[k],'leads')),backgroundColor:'rgba(239,108,0,.7)',borderRadius:6,borderSkipped:false}],{y:{beginAtZero:true}});
+    } else {
+        makeChart('metaConvChart','line',ks.map(mLabel),[{data:ks.map(k=>sum(mo[k],'conv')),borderColor:'#1877f2',backgroundColor:'#1877f218',borderWidth:2.5,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#1877f2'}],{y:{beginAtZero:true}});
+    }
+    // Table
+    const ag=grpAd(d),tbody=document.getElementById('metaTableBody');
+    const entries=Object.entries(ag).sort((a,b)=>sum(b[1],'cost')-sum(a[1],'cost'));
+    tbody.innerHTML=entries.map(([name,rows])=>{
+        const im2=sum(rows,'imp'),cl2=sum(rows,'cl'),co=sum(rows,'cost'),cv2=sum(rows,'conv'),ld2=sum(rows,'leads');
+        const act=cv2+ld2,ct=im2>0?(cl2/im2)*100:0,cp=act>0?co/act:0;
+        const isLG=rows[0]?.campType==='leadgen';
+        const typeLabel=isLG?'<span style="color:var(--warning);font-weight:600">Lead Gen</span>':'<span style="color:var(--exteco-green);font-weight:600">Conversion</span>';
+        const actLabel=isLG?fN(ld2)+' leads':fN(cv2)+' conv.';
+        return`<tr><td><strong style="color:var(--text-primary)">${name}</strong></td><td>${typeLabel}</td><td>${fN(im2)}</td><td>${fN(cl2)}</td><td class="td-b">${fPct(ct)}</td><td class="td-b">${fE2(co)}</td><td class="td-b">${actLabel}</td><td>${act>0?fE2(cp):'-'}</td></tr>`
+    }).join('');
+}
+
+// ══ GOOGLE PAGE ══
+function renderGooglePage(){
+    const d=GD,sp=sum(d,'cost'),cv=sum(d,'conv'),cl=sum(d,'cl'),im=sum(d,'imp');
     const cpl=cv>0?sp/cv:0,ctr=im>0?(cl/im)*100:0;
-    const ic=p==='meta'?'meta-i':'google-i';
-    document.getElementById(p+'KpiGrid').innerHTML=kpiHTML([
-        {label:'Dépenses',value:fE(sp),sub:p==='meta'?'Meta Ads':'Google Ads',icon:ic,svg:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
+    const ic='google-i';
+    document.getElementById('googleKpiGrid').innerHTML=kpiHTML([
+        {label:'Dépenses',value:fE(sp),sub:'Google Ads',icon:ic,svg:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>'},
         {label:'Conversions',value:fN(cv),sub:fN(im)+' impr.',icon:ic,svg:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
         {label:'Coût / Conv.',value:cv>0?fE2(cpl):'-',sub:fN(cl)+' clics',icon:ic,svg:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'},
         {label:'CTR',value:fPct(ctr),sub:'Moyenne',icon:ic,svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'}
     ]);
-    // Charts
     const mo=grpMonth(d),ks=Object.keys(mo).sort();
-    const color=p==='meta'?'#1877f2':'#4285f4';
-    makeChart(p+'SpendChart','bar',ks.map(mLabel),[{data:ks.map(k=>sum(mo[k],'cost')),backgroundColor:color+'bb',borderRadius:6,borderSkipped:false}],{y:{ticks:{callback:v=>fE(v)}}});
-    makeChart(p+'ConvChart','line',ks.map(mLabel),[{data:ks.map(k=>sum(mo[k],'conv')),borderColor:color,backgroundColor:color+'18',borderWidth:2.5,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:color}],{y:{beginAtZero:true}});
-    // Table
-    const ag=grpAd(d),tbody=document.getElementById(p+'TableBody');
+    makeChart('googleSpendChart','bar',ks.map(mLabel),[{data:ks.map(k=>sum(mo[k],'cost')),backgroundColor:'#4285f4bb',borderRadius:6,borderSkipped:false}],{y:{ticks:{callback:v=>fE(v)}}});
+    makeChart('googleConvChart','line',ks.map(mLabel),[{data:ks.map(k=>sum(mo[k],'conv')),borderColor:'#4285f4',backgroundColor:'#4285f418',borderWidth:2.5,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#4285f4'}],{y:{beginAtZero:true}});
+    const ag=grpAd(d),tbody=document.getElementById('googleTableBody');
     const entries=Object.entries(ag).sort((a,b)=>sum(b[1],'cost')-sum(a[1],'cost'));
     tbody.innerHTML=entries.map(([name,rows])=>{const im2=sum(rows,'imp'),cl2=sum(rows,'cl'),co=sum(rows,'cost'),cv2=sum(rows,'conv'),ct=im2>0?(cl2/im2)*100:0,cp=cv2>0?co/cv2:0;return`<tr><td><strong style="color:var(--text-primary)">${name}</strong></td><td>${fN(im2)}</td><td>${fN(cl2)}</td><td class="td-b">${fPct(ct)}</td><td class="td-b">${fE2(co)}</td><td class="td-b">${fN(cv2)}</td><td>${cv2>0?fE2(cp):'-'}</td></tr>`}).join('');
 }
@@ -611,14 +803,16 @@ function renderPlatformPage(p){
 // ══ REPORTS ══
 function renderReports(){
     const el=document.getElementById('platformSummary');
+    el.innerHTML='';
     [{k:'meta',l:'Meta Ads',d:MD,c:'var(--meta-blue)',bg:'var(--meta-blue-soft)'},{k:'google',l:'Google Ads',d:GD,c:'var(--google-blue)',bg:'var(--google-soft)'}].forEach(p=>{
-        const sp=sum(p.d,'cost'),cv=sum(p.d,'conv'),cl=sum(p.d,'cl'),im=sum(p.d,'imp');
-        const cpl=cv>0?sp/cv:0,ctr=im>0?(cl/im)*100:0;
-        el.innerHTML+=`<div class="card"><div class="plat-block-header"><div class="dot" style="background:${p.c}"></div><strong>${p.l}</strong><span class="count">${p.d.length} lignes</span></div><div class="plat-metrics"><div class="plat-metric" style="background:${p.bg}"><div class="lbl">Dépenses</div><div class="val">${fE(sp)}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">Conversions</div><div class="val">${fN(cv)}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">CPL</div><div class="val">${cv>0?fE2(cpl):'-'}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">CTR</div><div class="val">${fPct(ctr)}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">Impressions</div><div class="val">${fN(im)}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">Clics</div><div class="val">${fN(cl)}</div></div></div></div>`;
+        const sp=sum(p.d,'cost'),cv=sum(p.d,'conv'),ld=sum(p.d,'leads'),cl=sum(p.d,'cl'),im=sum(p.d,'imp');
+        const totalAct=cv+ld,cpa=totalAct>0?sp/totalAct:0,ctr=im>0?(cl/im)*100:0;
+        const isMeta=p.k==='meta';
+        const actLabel=isMeta&&ld>0?'Conv. web':'Conversions';
+        el.innerHTML+=`<div class="card"><div class="plat-block-header"><div class="dot" style="background:${p.c}"></div><strong>${p.l}</strong></div><div class="plat-metrics"><div class="plat-metric" style="background:${p.bg}"><div class="lbl">Dépenses</div><div class="val">${fE(sp)}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">${actLabel}</div><div class="val">${fN(cv)}</div></div>${isMeta&&ld>0?`<div class="plat-metric" style="background:${p.bg}"><div class="lbl">Leads</div><div class="val">${fN(ld)}</div></div>`:''}<div class="plat-metric" style="background:${p.bg}"><div class="lbl">${isMeta&&ld>0?'Coût/Action':'CPL'}</div><div class="val">${totalAct>0?fE2(cpa):'-'}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">CTR</div><div class="val">${fPct(ctr)}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">Impressions</div><div class="val">${fN(im)}</div></div><div class="plat-metric" style="background:${p.bg}"><div class="lbl">Clics</div><div class="val">${fN(cl)}</div></div></div></div>`;
     });
-    // CPL trend
     const mm=grpMonth(MD),gm=grpMonth(GD),ks=[...new Set([...Object.keys(mm),...Object.keys(gm)])].sort();
-    const mCPL=ks.map(k=>{const d=mm[k]||[];const c=sum(d,'cost'),v=sum(d,'conv');return v>0?Math.round(c/v*100)/100:null});
+    const mCPL=ks.map(k=>{const d=mm[k]||[];const c=sum(d,'cost'),v=sum(d,'conv')+sum(d,'leads');return v>0?Math.round(c/v*100)/100:null});
     const gCPL=ks.map(k=>{const d=gm[k]||[];const c=sum(d,'cost'),v=sum(d,'conv');return v>0?Math.round(c/v*100)/100:null});
     makeChart('cplTrendChart','line',ks.map(mLabel),[
         {label:'Meta CPL',data:mCPL,borderColor:'#1877f2',backgroundColor:'rgba(24,119,242,.08)',borderWidth:2.5,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#1877f2',spanGaps:true},
@@ -629,13 +823,17 @@ function renderReports(){
 // ══ TABLE ══
 function renderTable(p){
     const d=getData(p),g={};
-    d.forEach(r=>{const k=r.p+'::'+(r.ad||r.camp||'Autre');if(!g[k])g[k]={p:r.p,n:r.ad||r.camp||'Autre',rows:[]};g[k].rows.push(r)});
+    d.forEach(r=>{const k=r.p+'::'+r.campType+'::'+(r.ad||r.camp||'Autre');if(!g[k])g[k]={p:r.p,campType:r.campType,n:r.ad||r.camp||'Autre',rows:[]};g[k].rows.push(r)});
     const tb=document.getElementById('tableBody'),es=Object.values(g).sort((a,b)=>sum(b.rows,'cost')-sum(a.rows,'cost'));
-    if(!es.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-tertiary)">Aucune donnée</td></tr>';return}
-    tb.innerHTML=es.map(e=>{const im=sum(e.rows,'imp'),cl=sum(e.rows,'cl'),co=sum(e.rows,'cost'),cv=sum(e.rows,'conv'),ct=im>0?(cl/im)*100:0,cp=cv>0?co/cv:0;
-        const pp=cv>0&&cp>0?Math.min(100,Math.max(10,100-(cp/80*100))):10,pc=pp>65?'g':pp>40?'m':'l';
-        const isM=e.p==='meta',ico=isM?`<div class="camp-icon meta-bg">${ICO_META}</div>`:`<div class="camp-icon google-bg">${ICO_GOOG}</div>`;
-        return`<tr><td><div class="camp-name">${ico}<div class="camp-info"><div class="n">${e.n}</div></div></div></td><td>${isM?'Meta':'Google'}</td><td>${fN(im)}</td><td>${fN(cl)}</td><td class="td-b">${fPct(ct)}</td><td class="td-b">${fE2(co)}</td><td class="td-b">${fN(cv)}</td><td>${cv>0?fE2(cp):'-'}</td><td><div class="perf-bar"><div class="perf-fill ${pc}" style="width:${pp}%"></div></div></td></tr>`}).join('');
+    if(!es.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-tertiary)">Aucune donnée sur cette période</td></tr>';return}
+    tb.innerHTML=es.map(e=>{const im=sum(e.rows,'imp'),cl=sum(e.rows,'cl'),co=sum(e.rows,'cost'),cv=sum(e.rows,'conv'),ld=sum(e.rows,'leads');
+        const act=cv+ld,ct=im>0?(cl/im)*100:0,cp=act>0?co/act:0;
+        const pp=act>0&&cp>0?Math.min(100,Math.max(10,100-(cp/80*100))):10,pc=pp>65?'g':pp>40?'m':'l';
+        const isM=e.p==='meta',isLG=e.campType==='leadgen';
+        const ico=isM?`<div class="camp-icon meta-bg">${ICO_META}</div>`:`<div class="camp-icon google-bg">${ICO_GOOG}</div>`;
+        const platLabel=isM?(isLG?'Meta LG':'Meta'):'Google';
+        const actLabel=isLG?fN(ld):fN(cv);
+        return`<tr><td><div class="camp-name">${ico}<div class="camp-info"><div class="n">${e.n}</div></div></div></td><td>${platLabel}</td><td>${fN(im)}</td><td>${fN(cl)}</td><td class="td-b">${fPct(ct)}</td><td class="td-b">${fE2(co)}</td><td class="td-b">${actLabel}</td><td>${act>0?fE2(cp):'-'}</td><td><div class="perf-bar"><div class="perf-fill ${pc}" style="width:${pp}%"></div></div></td></tr>`}).join('');
 }
 
 // ══ CHART FACTORIES ══
@@ -652,8 +850,9 @@ function makeDoughnut(id,labels,data,colors){
 }
 
 // ══ INTERACTIONS ══
-function switchPlatform(p,btn){curPlatform=p;document.querySelectorAll('.platform-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderKPIs(p)}
-function filterTable(p,btn){btn.closest('.table-filters').querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderTable(p)}
+function switchPlatform(p,btn){curPlatform=p;document.querySelectorAll('#page-overview .platform-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderKPIs(p)}
+function switchMetaTab(tab,btn){curMetaTab=tab;document.querySelectorAll('#page-meta .platform-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderMetaPage()}
+function filterTable(p,btn){curTableFilter=p;btn.closest('.table-filters').querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderTable(p)}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show')}
 document.getElementById('sidebarOverlay').addEventListener('click',toggleSidebar);
 
@@ -661,3 +860,4 @@ init();
 </script>
 </body>
 </html>
+
