@@ -370,8 +370,10 @@
             <div class="page-header"><div class="header-row"><div><h2>Vue d'ensemble</h2><p>Exteco Epinal &bull; Donn&eacute;es en temps r&eacute;el depuis Supermetrics</p></div><div class="header-actions"><button class="btn btn-outline" onclick="location.reload()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Actualiser</button></div></div></div>
             <div class="platform-tabs"><button class="platform-tab active" onclick="switchPlatform('all',this)"><span class="tab-dot all"></span>Toutes</button><button class="platform-tab" onclick="switchPlatform('meta',this)"><span class="tab-dot meta"></span>Meta Ads</button><button class="platform-tab" onclick="switchPlatform('google',this)"><span class="tab-dot google"></span>Google Ads</button></div>
             <div class="kpi-grid" id="kpiGrid"></div>
-            <div class="grid-2-1"><div class="card"><div class="card-header"><div><div class="card-title">&Eacute;volution des d&eacute;penses</div><div class="card-subtitle">D&eacute;penses mensuelles Meta vs Google</div></div><div class="chart-legend"><div class="legend-item"><span class="legend-dot" style="background:var(--meta-blue)"></span>Meta</div><div class="legend-item"><span class="legend-dot" style="background:var(--google-blue)"></span>Google</div></div></div><div class="chart-container"><canvas id="spendChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title">R&eacute;partition budget</div><div class="card-subtitle">Par ensemble / groupe</div></div></div><div class="chart-container"><canvas id="budgetChart"></canvas></div></div></div>
-            <div class="grid-2-1"><div class="card"><div class="card-header"><div><div class="card-title">Conversions mensuelles</div><div class="card-subtitle">Meta Ads vs Google Ads</div></div><div class="chart-legend"><div class="legend-item"><span class="legend-dot" style="background:var(--meta-blue)"></span>Meta</div><div class="legend-item"><span class="legend-dot" style="background:var(--google-blue)"></span>Google</div></div></div><div class="chart-container"><canvas id="convChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title">CTR par service</div><div class="card-subtitle">Taux de clics par groupe</div></div></div><div class="chart-container"><canvas id="ctrChart"></canvas></div></div></div>
+            <div class="grid-1-1"><div class="card"><div class="card-header"><div><div class="card-title">&Eacute;volution des d&eacute;penses</div><div class="card-subtitle">D&eacute;penses mensuelles Meta vs Google</div></div><div class="chart-legend"><div class="legend-item"><span class="legend-dot" style="background:var(--meta-blue)"></span>Meta</div><div class="legend-item"><span class="legend-dot" style="background:var(--google-blue)"></span>Google</div></div></div><div class="chart-container"><canvas id="spendChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title">Actions mensuelles</div><div class="card-subtitle">Conversions &amp; Leads</div></div><div class="chart-legend"><div class="legend-item"><span class="legend-dot" style="background:var(--meta-blue)"></span>Meta</div><div class="legend-item"><span class="legend-dot" style="background:var(--google-blue)"></span>Google</div></div></div><div class="chart-container"><canvas id="convChart"></canvas></div></div></div>
+            <div class="grid-1-1"><div class="card"><div class="card-header"><div><div class="card-title">Budget Meta</div><div class="card-subtitle">R&eacute;partition par audience</div></div></div><div class="chart-container"><canvas id="budgetMetaChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title">Budget Google</div><div class="card-subtitle">R&eacute;partition par groupe</div></div></div><div class="chart-container"><canvas id="budgetGoogleChart"></canvas></div></div></div>
+            <div class="grid-1-1"><div class="card"><div class="card-header"><div><div class="card-title">CTR par service &mdash; Meta</div><div class="card-subtitle">Taux de clics par audience</div></div></div><div class="chart-container"><canvas id="ctrMetaChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title">CTR par service &mdash; Google</div><div class="card-subtitle">Taux de clics par groupe</div></div></div><div class="chart-container"><canvas id="ctrGoogleChart"></canvas></div></div></div>
+            <div class="grid-1-1"><div class="card"><div class="card-header"><div><div class="card-title">Actions par service &mdash; Meta</div><div class="card-subtitle">Conversions web &amp; Leads</div></div></div><div class="chart-container"><canvas id="actMetaChart"></canvas></div></div><div class="card"><div class="card-header"><div><div class="card-title">Actions par service &mdash; Google</div><div class="card-subtitle">Conversions</div></div></div><div class="chart-container"><canvas id="actGoogleChart"></canvas></div></div></div>
         </div>
 
         <!-- ═══════════════════════════════════════
@@ -702,15 +704,36 @@ function kpiHTML(items){return items.map(i=>`<div class="kpi-card"><div class="k
 function renderOverviewCharts(){
     const mm=grpMonth(MD),gm=grpMonth(GD);
     const ks=[...new Set([...Object.keys(mm),...Object.keys(gm)])].sort();
+    // Spend over time
     makeChart('spendChart','bar',ks.map(mLabel),[{label:'Meta',data:ks.map(k=>sum(mm[k]||[],'cost')),backgroundColor:'rgba(24,119,242,.75)',borderRadius:6,borderSkipped:false},{label:'Google',data:ks.map(k=>sum(gm[k]||[],'cost')),backgroundColor:'rgba(66,133,244,.4)',borderRadius:6,borderSkipped:false}],{y:{ticks:{callback:v=>fE(v)}}});
-    const mg=grpAd(MD),gg=grpAd(GD),labs=[],vals=[],cols=['#1877f2','#42a5f5','#90caf9','#bbdefb','#34a853','#66bb6a','#a5d6a7','#c8e6c9'];
-    Object.entries(mg).forEach(([n,r])=>{labs.push('Meta: '+n);vals.push(sum(r,'cost'))});
-    Object.entries(gg).forEach(([n,r])=>{labs.push('Google: '+n);vals.push(sum(r,'cost'))});
-    makeDoughnut('budgetChart',labs,vals,cols);
+    // Actions over time (conv+leads)
     makeChart('convChart','line',ks.map(mLabel),[{label:'Meta',data:ks.map(k=>{const d=mm[k]||[];return sum(d,'conv')+sum(d,'leads')}),borderColor:'#1877f2',backgroundColor:'rgba(24,119,242,.1)',borderWidth:2.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#1877f2'},{label:'Google',data:ks.map(k=>sum(gm[k]||[],'conv')),borderColor:'#4285f4',backgroundColor:'rgba(66,133,244,.08)',borderWidth:2.5,fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#4285f4'}],{y:{beginAtZero:true}});
-    const all=[...MD,...GD],ag=grpAd(all),cLabs=[],cVals=[],cCols=[];
-    Object.entries(ag).forEach(([n,rs])=>{const im=sum(rs,'imp'),cl=sum(rs,'cl');cLabs.push(n);cVals.push(im>0?Math.round((cl/im)*10000)/100:0);cCols.push(rs[0]?.p==='meta'?'rgba(24,119,242,.7)':'rgba(66,133,244,.4)')});
-    makeChart('ctrChart','bar',cLabs,[{data:cVals,backgroundColor:cCols,borderRadius:6,borderSkipped:false}],{x:{ticks:{callback:v=>v+'%'}}},{indexAxis:'y'});
+    // Budget doughnuts — Meta
+    const mg=grpAd(MD),mLabs=[],mVals=[],mCols=['#1877f2','#42a5f5','#64b5f6','#90caf9','#bbdefb','#e3f2fd'];
+    Object.entries(mg).sort((a,b)=>sum(b[1],'cost')-sum(a[1],'cost')).forEach(([n,r])=>{mLabs.push(n);mVals.push(sum(r,'cost'))});
+    makeDoughnut('budgetMetaChart',mLabs,mVals,mCols);
+    // Budget doughnuts — Google
+    const gg=grpAd(GD),gLabs=[],gVals=[],gCols=['#4285f4','#34a853','#fbbc05','#ea4335','#66bb6a','#a5d6a7'];
+    Object.entries(gg).sort((a,b)=>sum(b[1],'cost')-sum(a[1],'cost')).forEach(([n,r])=>{gLabs.push(n);gVals.push(sum(r,'cost'))});
+    makeDoughnut('budgetGoogleChart',gLabs,gVals,gCols);
+    // CTR — Meta
+    const mAg=grpAd(MD),mCtrL=[],mCtrV=[];
+    Object.entries(mAg).forEach(([n,rs])=>{const im=sum(rs,'imp'),cl=sum(rs,'cl');mCtrL.push(n);mCtrV.push(im>0?Math.round((cl/im)*10000)/100:0)});
+    makeChart('ctrMetaChart','bar',mCtrL,[{data:mCtrV,backgroundColor:'rgba(24,119,242,.65)',borderRadius:6,borderSkipped:false}],{x:{ticks:{callback:v=>v+'%'}}},{indexAxis:'y'});
+    // CTR — Google
+    const gAg=grpAd(GD),gCtrL=[],gCtrV=[];
+    Object.entries(gAg).forEach(([n,rs])=>{const im=sum(rs,'imp'),cl=sum(rs,'cl');gCtrL.push(n);gCtrV.push(im>0?Math.round((cl/im)*10000)/100:0)});
+    makeChart('ctrGoogleChart','bar',gCtrL,[{data:gCtrV,backgroundColor:'rgba(66,133,244,.55)',borderRadius:6,borderSkipped:false}],{x:{ticks:{callback:v=>v+'%'}}},{indexAxis:'y'});
+    // Actions par service — Meta (conv + leads stacked)
+    const mActL=[],mConvV=[],mLeadV=[];
+    Object.entries(mAg).sort((a,b)=>{ const tB=sum(b[1],'conv')+sum(b[1],'leads'),tA=sum(a[1],'conv')+sum(a[1],'leads');return tB-tA}).forEach(([n,rs])=>{mActL.push(n);mConvV.push(sum(rs,'conv'));mLeadV.push(sum(rs,'leads'))});
+    const mActDS=[{label:'Conv. web',data:mConvV,backgroundColor:'rgba(85,110,54,.7)',borderRadius:6,borderSkipped:false}];
+    if(mLeadV.some(v=>v>0))mActDS.push({label:'Leads',data:mLeadV,backgroundColor:'rgba(239,108,0,.6)',borderRadius:6,borderSkipped:false});
+    makeChart('actMetaChart','bar',mActL,mActDS,{y:{beginAtZero:true}},{indexAxis:'y',plugins:{legend:{display:mLeadV.some(v=>v>0),position:'top',labels:{usePointStyle:true,pointStyle:'circle',font:{size:10}}}},scales:{x:{stacked:true},y:{stacked:true}}});
+    // Actions par service — Google
+    const gActL=[],gConvV=[];
+    Object.entries(gAg).sort((a,b)=>sum(b[1],'conv')-sum(a[1],'conv')).forEach(([n,rs])=>{gActL.push(n);gConvV.push(sum(rs,'conv'))});
+    makeChart('actGoogleChart','bar',gActL,[{data:gConvV,backgroundColor:'rgba(66,133,244,.55)',borderRadius:6,borderSkipped:false}],{y:{beginAtZero:true}},{indexAxis:'y'});
 }
 
 // ══ META PAGE ══
